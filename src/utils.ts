@@ -38,7 +38,7 @@ export const getImageBuffer = async ({ url, label }: Img) => {
 export const getTextImage = async (text: string) => {
     const backHeight = 40;
 
-    const textImage = new Jimp(w, backHeight, 'rgba(0,0,0,0.5)', (err) => {
+    const textImage = new Jimp(w, backHeight, 'rgba(0,0,0,0.6)', (err) => {
         if (err) throw err;
     });
     const font = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE);
