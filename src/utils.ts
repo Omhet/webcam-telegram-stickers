@@ -27,29 +27,33 @@ export const getImageBuffer = async ({ url, label }: Img) => {
         responseType: 'arraybuffer',
     });
 
-    const textImage = new Jimp(w, h, 'transparent', (err) => {
+    const textImage = await getTextImage(label);
+
+    return sharp(imageBuffer)
+        .resize(w, h)
+        .composite([{ input: textImage, gravity: 'southwest' }])
+        .toBuffer();
+};
+
+export const getTextImage = async (text: string) => {
+    const backHeight = 40;
+
+    const textImage = new Jimp(w, backHeight, 'rgba(0,0,0,0.5)', (err) => {
         if (err) throw err;
     });
     const font = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE);
-    const buf = await textImage
+    return textImage
         .print(
             font,
-            0,
+            6,
             0,
             {
-                text: label,
+                text,
                 alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-                alignmentY: Jimp.VERTICAL_ALIGN_BOTTOM,
+                alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE,
             },
             w,
-            h
+            backHeight
         )
         .getBufferAsync('image/png');
-
-    const resized = sharp(imageBuffer)
-        .resize(w, h)
-        .composite([{ input: buf, gravity: 'centre' }])
-        .toBuffer();
-
-    return resized;
 };
