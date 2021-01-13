@@ -14,3 +14,8 @@ export interface ApiWebcamsResponse {
         webcams: Webcam[]
     }
 }
+
+export interface Img {
+    url: string;
+    label: string;
+}

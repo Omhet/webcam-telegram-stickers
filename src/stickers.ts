@@ -1,6 +1,7 @@
 import { Telegram } from 'telegraf';
 import { Sticker, StickerData } from 'telegraf/typings/telegram-types';
 import config from './config';
+import { Img } from './types';
 import { getImageBuffer } from './utils';
 
 export const getStickerPackName = async (telegram: Telegram) => {
@@ -18,13 +19,13 @@ export const getStickerPack = async (telegram: Telegram) => {
 
 export const updateStickers = async (
     telegram: Telegram,
-    imageUrls: string[],
+    images: Img[],
     stickers: Sticker[],
     onUpdate?: (index: number) => void
 ) => {
-    for (let i = 0; i < imageUrls.length; i++) {
+    for (let i = 0; i < images.length; i++) {
         const sticker = stickers[i];
-        const image = imageUrls[i];
+        const image = images[i];
         await updateSticker(telegram, image, sticker);
         onUpdate && onUpdate(i);
     }
@@ -32,27 +33,27 @@ export const updateStickers = async (
 
 export const updateSticker = async (
     telegram: Telegram,
-    imageUrl: string,
+    image: Img,
     sticker?: Sticker
 ) => {
     if (sticker !== undefined) {
         await deleteSticker(telegram, sticker);
     }
 
-    await addSticker(telegram, imageUrl);
+    await addSticker(telegram, image);
 };
 
 export const deleteSticker = async (telegram: Telegram, sticker: Sticker) => {
     return telegram.deleteStickerFromSet(sticker.file_id);
 };
 
-export const addSticker = async (telegram: Telegram, imageUrl: string) => {
+export const addSticker = async (telegram: Telegram, image: Img) => {
     const packName = await getStickerPackName(telegram);
 
     const newStickerFile = await telegram.uploadStickerFile(
         Number(config.OWNER_ID),
         {
-            source: await getImageBuffer(imageUrl),
+            source: await getImageBuffer(image),
         }
     );
 
