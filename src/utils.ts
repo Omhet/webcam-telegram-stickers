@@ -16,5 +16,5 @@ export const getImageBuffer = async (imageUrl: string) => {
         responseType: 'arraybuffer',
     });
 
-    return await sharp(imageBuffer).resize(512).toBuffer();
+    return await sharp(imageBuffer).resize(512, 360).toBuffer();
 }
